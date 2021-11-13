@@ -1,11 +1,16 @@
+// Express and Cors
 const express = require('express');
+const cors = require('cors');
+const app = express();
+
+// MongoDB
 const { MongoClient, CURSOR_FLAGS } = require('mongodb');
 const ObjectId = require('mongodb').ObjectId;
 
+// DotENV
 require('dotenv').config();
-const cors = require('cors');
 
-const app = express();
+// Port
 const port = process.env.PORT || 5000;
 
 //Middleware
@@ -28,35 +33,35 @@ async function run() {
 		const reviews = database.collection('reviews');
 		const orders = database.collection('orders');
 
-		//get api for products
+		//Get Api For Products
 		app.get('/products', async (req, res) => {
 			const cursor = products.find({});
 			const byCicles = await cursor.toArray();
 			res.send(byCicles);
 		});
 
-		//get api for reviews
+		//Get Api For Reviews
 		app.get('/reviews', async (req, res) => {
 			const cursor = reviews.find({});
 			const reviewsInfo = await cursor.toArray();
 			res.send(reviewsInfo);
 		});
 
-		//get api for users
+		//Get Api For Users
 		app.get('/users', async (req, res) => {
 			const cursor = usersCollection.find({});
 			const users = await cursor.toArray();
 			res.send(users);
 		});
 
-		//get api for orders
+		//Get Api For Orders
 		app.get('/orders', async (req, res) => {
 			const cursor = orders.find({});
 			const orderInfo = await cursor.toArray();
 			res.send(orderInfo);
 		});
 
-		//post api for products
+		//Post Api For Products
 		app.post('/products', async (req, res) => {
 			const product = req.body;
 			console.log('hit the post', product);
@@ -65,7 +70,7 @@ async function run() {
 			res.json(result);
 		});
 
-		//post api for reviews
+		//Post Api For Reviews
 		app.post('/reviews', async (req, res) => {
 			const review = req.body;
 			console.log('hit the post', review);
@@ -73,13 +78,15 @@ async function run() {
 			console.log(result);
 			res.json(result);
 		});
-		//post api for users
+		//Post Api For Users
 		app.post('/users', async (req, res) => {
 			const user = req.body;
 			const result = await usersCollection.insertOne(user);
 			console.log(result);
 			res.json(result);
 		});
+
+		//Put Api For Users
 		app.put('/users', async (req, res) => {
 			const user = req.body;
 			const filter = { email: user.email };
@@ -92,6 +99,8 @@ async function run() {
 			);
 			res.json(result);
 		});
+
+		//Put Api For Admin
 		app.put('/users/admin', async (req, res) => {
 			const user = req.body;
 			console.log(user);
@@ -101,14 +110,15 @@ async function run() {
 			res.json(result);
 		});
 
-		//delete api for orders
+		//Delete Api For Orders
 		app.delete('/orders/:id', async (req, res) => {
 			const id = req.params.id;
 			const query = { _id: ObjectId(id) };
 			const result = await orders.deleteOne(query);
 			res.json(result);
 		});
-		//post api for orders
+
+		//Post Api For Orders
 		app.post('/orders', async (req, res) => {
 			const order = req.body;
 			console.log('hit the post', order);
@@ -116,7 +126,8 @@ async function run() {
 			console.log(result);
 			res.json(result);
 		});
-		// update api for orders
+
+		// Update Api For Orders
 		app.put('/orders/:id', async (req, res) => {
 			const id = req.params.id;
 			const query = { _id: ObjectId(id) };
@@ -136,9 +147,9 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', async (req, res) => {
-	res.send('Running assignment 12 Server');
+	res.send('Ride Bike Node Server Running!');
 });
 
 app.listen(port, () => {
-	console.log('running database', port);
+	console.log('Server Running on', port);
 });
