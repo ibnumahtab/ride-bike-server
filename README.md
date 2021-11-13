@@ -33,10 +33,15 @@ A biker always loves to have bike riding quotes in his room where he lives. This
 
 ## FAQ
 
-#### Is this project comes with React Route?
+#### Which Node FrameWork?
 
-Yes, Including Private Route with Google Authentication.
+ExpressJS
 
-#### Any CSS Frameworks?
+#### Any MiddleWear?
 
-Tailwind CSS
+Cors
+Express JSON
+
+#### What is the Database?
+
+MongoDB
