@@ -27,6 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
 	try {
 		await client.connect();
+		console.log('connect to database');
 		const database = client.db('RideBike');
 		const products = database.collection('products');
 		const usersCollection = database.collection('users');
@@ -78,6 +79,7 @@ async function run() {
 			console.log(result);
 			res.json(result);
 		});
+
 		//Post Api For Users
 		app.post('/users', async (req, res) => {
 			const user = req.body;
@@ -86,7 +88,7 @@ async function run() {
 			res.json(result);
 		});
 
-		//Put Api For Users
+
 		app.put('/users', async (req, res) => {
 			const user = req.body;
 			const filter = { email: user.email };
@@ -100,7 +102,7 @@ async function run() {
 			res.json(result);
 		});
 
-		//Put Api For Admin
+
 		app.put('/users/admin', async (req, res) => {
 			const user = req.body;
 			console.log(user);
@@ -118,7 +120,15 @@ async function run() {
 			res.json(result);
 		});
 
-		//Post Api For Orders
+		//delete api for products
+		app.delete('/products/:id', async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: ObjectId(id) };
+			const result = await products.deleteOne(query);
+			res.json(result);
+		});
+
+		//post api for orders
 		app.post('/orders', async (req, res) => {
 			const order = req.body;
 			console.log('hit the post', order);
@@ -126,8 +136,7 @@ async function run() {
 			console.log(result);
 			res.json(result);
 		});
-
-		// Update Api For Orders
+		// update api for orders
 		app.put('/orders/:id', async (req, res) => {
 			const id = req.params.id;
 			const query = { _id: ObjectId(id) };
@@ -139,6 +148,16 @@ async function run() {
 			};
 			const result = await orders.updateOne(query, updateDoc, options);
 			res.json(result);
+		});
+		app.get('/users/:email', async (req, res) => {
+			const email = req.params.email;
+			const query = { email: email };
+			const user = await usersCollection.findOne(query);
+			let isAdmin = false;
+			if (user?.role === 'admin') {
+				isAdmin = true;
+			}
+			res.json({ admin: isAdmin });
 		});
 	} finally {
 		// await client.close()
